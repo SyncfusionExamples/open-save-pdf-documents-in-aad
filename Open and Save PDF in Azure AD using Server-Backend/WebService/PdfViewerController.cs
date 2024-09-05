@@ -47,7 +47,7 @@ namespace PdfViewerWebService
         [Route("[controller]/Load")]
         //Post action for Loading the PDF documents   
 
-        public async Task<IActionResult> Load([FromBody] Dictionary<string, string> jsonObject)
+        public IActionResult Load([FromBody] Dictionary<string, string> jsonObject)
         {
             Console.WriteLine("Load called");
             // Initialize the PDF viewer object with memory cache object
@@ -67,7 +67,7 @@ namespace PdfViewerWebService
                     var blobClient = containerClient.GetBlobClient(document);
 
                     // Download the PDF file to a local stream
-                    await blobClient.DownloadToAsync(stream);
+                    blobClient.DownloadToAsync(stream);
                 }
                 else
                 {
@@ -250,7 +250,7 @@ namespace PdfViewerWebService
             PdfRenderer pdfviewer = new PdfRenderer(_cache);
             string documentBase = pdfviewer.GetDocumentAsBase64(jsonObject);
 
-            var fileName = jsonObject.ContainsKey("documentId") ? jsonObject["documentId"] : "Test.pdf";
+            var fileName = jsonObject.ContainsKey("documentId") ? jsonObject["documentId"] : "output.pdf";
             string convertedBase = documentBase.Substring(documentBase.LastIndexOf(',') + 1);
             // Decode the Base64 string to a byte array
             byte[] byteArray = Convert.FromBase64String(convertedBase);
