@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div>
+    <!-- Custom buttons for Load and Save -->
+    <div style="margin-top: 10px;">
+        <button id="loadFromAADButton" class="e-btn" style="margin-right: 10px;">Load From AAD</button>
+        <button id="saveToAADButton" class="e-btn">Save To AAD</button>
+    </div>
+    <div style="height:500px;width:100%;">
+        @Html.EJS().PdfViewer("pdfviewer").ServiceUrl(VirtualPathUtility.ToAbsolute("~/Home/")).DocumentPath("https://cdn.syncfusion.com/content/pdf/pdf-succinctly.pdf").Render()
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        var pdfViewer = document.getElementById('pdfviewer').ej2_instances[0];
+
+        document.getElementById('loadFromAADButton').addEventListener('click', function () {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("LoadFromAAD", "Home")?fileName=1Page.pdf', true); // Ensure URL is wrapped in quotes
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const data = xhr.responseText; // Get the response (assumed to be the PDF data or URL)
+                    console.log(data); // Handle the response (for debugging)
+
+                    // Assuming the response contains the URL of the PDF or file name
+                    pdfViewer.load(data); // Load the document
+                }
+            };
+            xhr.send();
+        });
+
+        // Handle the Save To AAD button click
+        document.getElementById('saveToAADButton').addEventListener('click', function () {
+            // Set the server action settings to handle the "Save To AAD" action
+            pdfViewer.serverActionSettings.download = "SaveToAAD"; // This triggers a custom server-side save action
+
+            // Trigger the download/save action
+            pdfViewer.download(); // Trigger the download, which may involve saving it to AAD
+        });
+    }
+</script>

@@ -1,0 +1,50 @@
+﻿@page "{handler?}"
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div>
+
+    <!-- Custom buttons for Load and Save -->
+    <div style="margin-top: 10px;">
+        <button id="loadFromAADButton" class="e-btn" style="margin-right: 10px;">Load From AAD</button>
+        <button id="saveToAADButton" class="e-btn">Save To AAD</button>
+    </div>
+    <ejs-pdfviewer id="pdfviewer" style="height:600px" serviceUrl="/Index" documentPath="https://cdn.syncfusion.com/content/pdf/pdf-succinctly.pdf">
+    </ejs-pdfviewer>
+
+</div>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var pdfViewer = document.getElementById('pdfviewer').ej2_instances[0];
+
+        // Handle the Load From AAD button click
+        document.getElementById('loadFromAADButton').addEventListener('click', function () {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/Index/LoadFromAAD?fileName=1Page.pdf`, true);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const data = xhr.responseText; // Get the response (assumed to be the PDF data or URL)
+                    console.log(data); // Handle the response (for debugging)
+
+                    // Load the PDF into the viewer (assuming the response contains the PDF data or URL)
+                    pdfViewer.load(data, ''); // Load the document
+                }
+            };
+            xhr.send();
+        });
+
+        // Handle the Save To AAD button click
+        document.getElementById('saveToAADButton').addEventListener('click', function () {
+            // Save PDF to AAD
+            // Set the server action settings to handle the "Save To AAD" action
+            pdfViewer.serverActionSettings.download = "SaveToAAD"; // This triggers a custom server-side save action
+            // Download the file (assuming this will be saved to AAD)
+            pdfViewer.download(); // Trigger the download, which may involve saving it to AAD
+
+        });
+    }
+</script>
+
