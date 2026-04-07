@@ -9,6 +9,7 @@ import { ComboBox } from "@syncfusion/ej2-dropdowns";
 import { TextBox } from "@syncfusion/ej2-inputs";
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   template: `<div class="content-wrapper">
                 <ejs-pdfviewer id="pdfViewer"
